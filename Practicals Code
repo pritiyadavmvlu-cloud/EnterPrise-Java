@@ -1,0 +1,173 @@
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Practical No:5
+5. Implement the following JSP JSTL and EL Applications.
+a. Create an html page with fields, eno, name, age, designation, salary.Now on submit this data to a JSP page which will update the employee table of database with matching eno.
+CODE:-
+SQL:
+CREATE DATABASE company;
+USE company;
+CREATE TABLE employee (
+    eno INT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    designation VARCHAR(50),
+    salary DOUBLE
+);
+INSERT INTO employee VALUES
+(101,'Priti',18,'Developer',25000),
+(102,'Amit',22,'Tester',22000),
+(103,'Ravi',23,'Manager',35000);
+updateEmployee.jsp:
+<%@ page import="java.sql.*" %>
+<%
+String enoStr = request.getParameter("eno");
+String name = request.getParameter("name");
+String ageStr = request.getParameter("age");
+String designation = request.getParameter("designation");
+String salaryStr = request.getParameter("salary");
+if (enoStr == null || enoStr.trim().equals("") ||
+    name == null || name.trim().equals("") ||
+    ageStr == null || ageStr.trim().equals("") ||
+    designation == null || designation.trim().equals("") ||
+    salaryStr == null || salaryStr.trim().equals("")) {
+    out.println("<h2>Please fill all fields.</h2>");
+    return;
+}
+int eno = Integer.parseInt(enoStr);
+int age = Integer.parseInt(ageStr);
+double salary = Double.parseDouble(salaryStr);
+Connection con = null;
+PreparedStatement ps = null;
+try {
+    Class.forName("com.mysql.cj.jdbc.Driver");
+    con = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/company?useSSL=false&serverTimezone=UTC",
+        "root",
+        "Priti@0103"
+    );
+    String sql = "UPDATE employee SET name=?, age=?, designation=?, salary=? WHERE eno=?";
+    ps = con.prepareStatement(sql);
+    ps.setString(1, name);
+    ps.setInt(2, age);
+    ps.setString(3, designation);
+    ps.setDouble(4, salary);
+    ps.setInt(5, eno);
+    int rows = ps.executeUpdate();
+    if(rows > 0){
+%>
+<h2 style="color:green;">Employee Updated Successfully!</h2>
+<%
+    }
+    else{
+%>
+<h2 style="color:red;">Employee Number Not Found!</h2>
+<%
+    }
+} catch(Exception e){
+    out.println("<h3>Error:</h3>");
+    out.println(e.getMessage());
+} finally{
+    if(ps != null)
+        ps.close();
+    if(con != null)
+        con.close();
+}
+%>
+<br>
+<a href="update.html">Go Back</a>
+Update.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Update Employee</title>
+</head>
+<body>
+<h2>Update Employee</h2>
+<form action="updateEmployee.jsp" method="post">
+Employee No:
+<input type="number" name="eno" required>
+<br><br>
+Name:
+<input type="text" name="name" required>
+<br><br>
+Age:
+<input type="number" name="age" required>
+<br><br>
+Designation:
+<input type="text" name="designation" required>
+<br><br>
+Salary:
+<input type="number" name="salary" required>
+<br><br>
+<input type="submit" value="Update Employee">
+</form>
+</body>
+</html>
+ 
+b. Create a JSP page to demonstrate the use of Expression language.
+CODE:-
+Index.html:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Home Page</div>
+        <a href="newjsp.jsp">click this</a>
+    </body>
+</html>
+Newjsp.jsp:
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Expression Language Demo</title>
+    </head>
+    <body>
+        <h2>JSP Expression Language Example</h2>
+        <p>Addition: ${12+2}</p>
+        <p>Multiplication: ${5*4}</p>
+        <p>Division: ${20/5}</p>
+        <p>Comparison: ${10>5}</p>
+        <p>Logical Operation: ${true && false}</p>
+    </body>
+</html>
+
+C. Create a JSP application to demonstrate the use of JSTL.
+CODE:-
+Index.html:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Home Page</div>
+        <a href="newjsp.jsp">click this</a>
+    </body>
+</html>
+Newjsp.jsp:
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Core Tag Example</title>
+    </head>
+    <body>
+        <c:forEach var = "j" begin="5" end="15">
+            Item <c:out value = "${j}"/><p>
+            </c:forEach>
+    </body>
+</html>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
