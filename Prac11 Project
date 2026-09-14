@@ -1,0 +1,317 @@
+#PRACTICAL NO :11 (PROJECT)
+
+11.Implement the Hibernate.
+Develop a five page web application site using any two or three Java EE Technologies.
+CODE:
+Index.jsp:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>College Information Portal</title>
+    </head>
+    <body>
+    <center>
+        <h1>College Information Portal</h1>
+        <a href="index.jsp">Home</a> |
+        <a href="about.jsp">About</a> |
+        <a href="courses.jsp">Courses</a> |
+        <a href="registration.jsp">Registration</a> |
+        <a href="contact.jsp">Contact</a>
+        <hr>
+        <h2>Welcome to Our College</h2>
+        <p>Welcome to the College Information Portal.</p>
+        <p>Explore our courses, college information and registration facility.</p>
+    </center>
+</body>
+</html>
+About.jsp:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>About College</title>
+    </head>
+    <body>
+    <center>
+        <h1>About Our College</h1>
+        <a href="index.jsp">Home</a> |
+        <a href="about.jsp">About</a> |
+        <a href="courses.jsp">Courses</a> |
+        <a href="registration.jsp">Registration</a> |
+        <a href="contact.jsp">Contact</a>
+        <hr>
+        <h2>About Us</h2>
+        <p>
+            Our college provides quality education and develops
+            technical and professional skills among students.
+        </p>
+        <p>
+            The college offers undergraduate courses in
+            Information Technology, Computer Science and Computer Applications.
+        </p>
+        <h3>Our Facilities</h3>
+        <p>Computer Laboratory</p>
+        <p>Library</p>
+        <p>Classrooms</p>
+        <p>Internet Facility</p>
+    </center>
+</body>
+</html>
+Courses.jsp:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Courses</title>
+</head>
+<body>
+<center>
+<h1>Courses Offered</h1>
+<a href="index.jsp">Home</a> |
+<a href="about.jsp">About</a> |
+<a href="courses.jsp">Courses</a> |
+<a href="registration.jsp">Registration</a> |
+<a href="contact.jsp">Contact</a>
+<hr>
+<h2>Available Courses</h2>
+<table border="1" cellpadding="10">
+<tr>
+    <th>Course</th>
+    <th>Duration</th>
+</tr>
+<tr>
+    <td>B.Sc. Information Technology</td>
+    <td>3 Years</td>
+</tr>
+<tr>
+    <td>B.Sc. Computer Science</td>
+    <td>3 Years</td>
+</tr>
+<tr>
+    <td>BCA</td>
+    <td>3 Years</td>
+</tr>
+</table>
+<br>
+<a href="registration.jsp">Register Now</a>
+</center>
+</body>
+</html>
+Registration.jsp:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+</head>
+<body>
+<center>
+<h1>Student Registration</h1>
+<a href="index.jsp">Home</a> |
+<a href="about.jsp">About</a> |
+<a href="courses.jsp">Courses</a> |
+<a href="registration.jsp">Registration</a> |
+<a href="contact.jsp">Contact</a>
+<hr>
+<form action="RegisterServlet" method="post">
+<table>
+<tr>
+    <td>Name:</td>
+    <td>
+        <input type="text" name="name" required>
+    </td>
+</tr>
+<tr>
+    <td>Email:</td>
+    <td>
+        <input type="email" name="email" required>
+    </td>
+</tr>
+<tr>
+    <td>Course:</td>
+    <td>
+        <select name="course">
+            <option>B.Sc. Information Technology</option>
+            <option>B.Sc. Computer Science</option>
+            <option>BCA</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>Phone:</td>
+    <td>
+        <input type="text" name="phone" required>
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <td>
+        <input type="submit" value="Register">
+        <input type="reset" value="Reset">
+    </td>
+</tr>
+</table>
+</form>
+</center>
+</body>
+</html>
+contact.jsp:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us</title>
+</head>
+<body>
+<center>
+<h1>Contact Us</h1>
+<a href="index.jsp">Home</a> |
+<a href="about.jsp">About</a> |
+<a href="courses.jsp">Courses</a> |
+<a href="registration.jsp">Registration</a> |
+<a href="contact.jsp">Contact</a>
+<hr>
+<h2>College Contact Information</h2>
+<p><b>College:</b> Sheth L.U.J College</p>
+<p><b>Department:</b> Information Technology</p>
+<p><b>Email:</b> college@example.com</p>
+<p><b>Phone:</b> 9876543210</p>
+
+<p><b>Address:</b> Mumbai, Maharashtra</p>
+</center>
+</body>
+</html>
+RegisterServlet.java:
+package college;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/RegisterServlet")
+public class RegisterServlet extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String course = request.getParameter("course");
+        String phone = request.getParameter("phone");
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            // Load Oracle JDBC Driver
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            // Connect to Oracle XE
+            con = DriverManager.getConnection(
+                    "jdbc:oracle:thin:@localhost:1521:XE",
+                    "system",
+                    "123"
+            );
+            // Insert registration details
+            String sql = "INSERT INTO registration "
+                    + "(id, name, email, course, phone) "
+                    + "VALUES (registration_seq.NEXTVAL, ?, ?, ?, ?)";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, course);
+            ps.setString(4, phone);
+            int result = ps.executeUpdate();
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Registration Result</title>");
+            out.println("<style>");
+            out.println("body {");
+            out.println("font-family: Arial;");
+            out.println("background-color: #f2f2f2;");
+            out.println("}");
+            out.println(".box {");
+            out.println("width: 500px;");
+            out.println("margin: 60px auto;");
+            out.println("background: white;");
+            out.println("padding: 30px;");
+            out.println("border: 1px solid #ccc;");
+            out.println("text-align: center;");
+            out.println("}");
+            out.println(".details {");
+            out.println("text-align: left;");
+            out.println("margin: 20px;");
+            out.println("}");
+            out.println("</style>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<div class='box'>");
+            if (result > 0) {
+                out.println("<h1>Registration Successful</h1>");
+                out.println("<div class='details'>");
+                out.println("<p><b>Name:</b> " + name + "</p>");
+                out.println("<p><b>Email:</b> " + email + "</p>");
+                out.println("<p><b>Course:</b> " + course + "</p>");
+                out.println("<p><b>Phone:</b> " + phone + "</p>");
+                out.println("</div>");
+                out.println("<p>Thank you for registering with our college.</p>");
+                out.println("<br>");
+                out.println("<a href='index.jsp'>Go to Home</a>");
+            } else {
+                out.println("<h1>Registration Failed</h1>");
+                out.println("<p>Please try again.</p>");
+                out.println("<br>");
+                out.println("<a href='registration.jsp'>Back to Registration</a>");
+            }
+            out.println("</div>");
+            out.println("</body>");
+            out.println("</html>");
+        } catch (ClassNotFoundException e) {
+            out.println("<h2>Oracle JDBC Driver Not Found</h2>");
+            out.println("<p>" + e.getMessage() + "</p>");
+        } catch (SQLException e) {
+            out.println("<h2>Database Error</h2>");
+            out.println("<p>" + e.getMessage() + "</p>");
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+------------------------------------------------------------------------------------
+SQL Command:
+drop table registration;
+CREATE TABLE registration (
+    id NUMBER PRIMARY KEY,
+    name VARCHAR2(50),
+    email VARCHAR2(100),
+    course VARCHAR2(100),
+    phone VARCHAR2(20)
+);
+drop SEQUENCE registration_seq;
+CREATE SEQUENCE registration_seq
+START WITH 1
+INCREMENT BY 1;
+DESC registration;
+SELECT * FROM registration;
+-----------------------------------------------------------------------------------------
+Formatting Output Command:
+SET LINESIZE 200
+SET PAGESIZE 50
+COLUMN id FORMAT 9999 HEADING "ID"
+COLUMN name FORMAT A15 HEADING "NAME"
+COLUMN email FORMAT A30 HEADING "EMAIL"
+COLUMN course FORMAT A30 HEADING "COURSE"
+COLUMN phone FORMAT A12 HEADING "PHONE"
+SELECT id, name, email, course, phone
+FROM registration;
